@@ -23,7 +23,7 @@ Attributes
     <th>Default</th>
   </tr>
   <tr>
-    <td><tt>['slack']['webhook_url']</tt></td>
+    <td><tt>["slack"]["webhook_url"]</tt></td>
     <td>String</td>
     <td>Your Incoming Webhook URL</td>
     <td><tt>nil</tt></td>
@@ -32,31 +32,57 @@ Attributes
 
 LWRP Usage
 -----
-In your `metadata.rb` you need to add `depends 'slack'` and add `include_recipe 'slack'` to your recipe. Passing the below will use default attributes
+1. Add `depends 'slack'` to your `metadata.rb`
+2. Add `include_recipe 'slack'` to your recipe 
 
+Passing the below will use default attributes and default Slack channel from webhook configuration.
 ```ruby
 slack_notify "Say Summat!"
 ```
 
+Send message immediately:
 ```ruby
 slack_notify "send_notification_message" do
   message "This is a notification message"
-  webhook_url 'https://hooks.slack.com/services/XXXX/XXXXXXX/XXXXXX'
-  not_if { node['im_boring'] }
+  webhook_url "https://hooks.slack.com/services/XXXX/XXXXXXX/XXXXXX"
+  not_if { node["im_boring"] }
 end
 ```
 
+Or use as notifier:
 ```ruby
 slack_notify "channel_nothing" do
   message "heres a message to kick off later"
-  username 'test_user'
-  channels ['foo','bar']
-  webhook_url 'https://hooks.slack.com/services/XXXX/XXXXXXX/XXXXXX'
+  username "test_user"
   action :nothing
 end
 
 something "talk_as_test_user_to_multiple_channels" do
   notifies :say, "slack[channel_nothing]", :immediately
+end
+```
+
+You can redefine channels and webhook URL:
+```ruby
+slack_notify "send_to_foo_chanel" do
+  message "Important message to be sent"
+  channels ["foo", "bar"]
+  webhook_url "https://hooks.slack.com/services/XXXX/XXXXXXX/XXXXXX"
+end
+```
+
+Also you can use attachments
+```ruby
+slack_notify "message_with_attachment" do
+  message "Message with attachments"
+  attachments [{
+    color: "good",
+    fields: [{
+      title: "Field title",
+      value: "Field value",
+      short: true
+    }]
+  }]
 end
 ```
 
@@ -69,6 +95,6 @@ Contributing
 5. Run the tests, ensuring they all pass
 6. Submit a Pull Request using Github
 
-License and Authors
+Contributors
 -------------------
-Authors: Ian Henry <ihenry@chef.io>
+https://github.com/Savedo/chef-slack/graphs/contributors
