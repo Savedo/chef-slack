@@ -5,7 +5,8 @@ end
 use_inline_resources
 
 action :notify do
-  webhook_url = new_resource.webhook_url || node["slack"]["webhook_url"]
+  #webhook_url = new_resource.webhook_url || node["slack"]["webhook_url"]
+  webhook_url = "https://hooks.slack.com/services/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"
   slack_notifier = Slack::Notifier.new(webhook_url)
 
   channels = new_resource.channels || [nil]
